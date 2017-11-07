@@ -28,6 +28,12 @@ RUN choco install \
     --limit-output \
     && rmdir /S /Q C:\chococache
 
+RUN choco install \
+    typescript \
+    --confirm \
+    --limit-output \
+    && rmdir /S /Q C:\chococache
+
 # common node tools
 RUN npm install gulp -g && npm install grunt -g && npm install -g less && npm install phantomjs-prebuilt -g
 
@@ -53,16 +59,16 @@ RUN $ErrorActionPreference = 'Stop'; \
     $VerbosePreference = 'Continue'; \
     Invoke-WebRequest -Uri https://aka.ms/vscollect.exe -OutFile C:\collect.exe
 
-# Download vs_community.exe
+# Download build tools
 RUN $ErrorActionPreference = 'Stop'; \
     $ProgressPreference = 'SilentlyContinue'; \
     $VerbosePreference = 'Continue'; \
-    Invoke-WebRequest -Uri "https://aka.ms/vs/15/release/vs_community.exe" -OutFile C:\vs_community.exe;
+    Invoke-WebRequest -Uri $env:VS_BUILDTOOLS_URI -OutFile C:\vs_buildtools.exe;
 
-# Install Visual Studio Community
+# Install build tools
 RUN $ErrorActionPreference = 'Stop'; \
     $VerbosePreference = 'Continue'; \
-    $p = Start-Process -Wait -PassThru -FilePath C:\vs_community.exe -ArgumentList '--quiet --nocache --wait --addProductLang en-US --includeRecommended --add Microsoft.VisualStudio.Workload.ManagedDesktop --add Microsoft.VisualStudio.Workload.Data --add Microsoft.VisualStudio.Workload.NetWeb --add Microsoft.VisualStudio.Workload.NetCoreTools --add Microsoft.VisualStudio.Workload.Azure --add Component.GitHub.VisualStudio'; \
+    $p = Start-Process -Wait -PassThru -FilePath C:\vs_buildtools.exe -ArgumentList '--quiet --nocache --wait'; \
     if ($ret = $p.ExitCode) { c:\collect.exe; throw ('Install failed with exit code 0x{0:x}' -f $ret) }
 
 RUN Invoke-WebRequest "https://github.com/Microsoft/vsts-agent/releases/download/v2.124.0/vsts-agent-win7-x64-2.124.0.zip" \
