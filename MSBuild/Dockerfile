@@ -17,7 +17,13 @@ RUN choco install \
     && rmdir /S /Q C:\chococache
 
 RUN choco install \
-    dotnet4.6.1 \
+    netfx-4.6.1-devpack \
+    --confirm \
+    --limit-output \
+    && rmdir /S /Q C:\chococache
+
+RUN choco install \
+    netfx-4.6.2-devpack \
     --confirm \
     --limit-output \
     && rmdir /S /Q C:\chococache
