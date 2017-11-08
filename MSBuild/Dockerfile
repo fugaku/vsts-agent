@@ -82,6 +82,8 @@ RUN Invoke-WebRequest "https://github.com/Microsoft/vsts-agent/releases/download
     Expand-Archive vsts-agent.zip -DestinationPath "C:\BuildAgent" -Force; \
     Remove-Item -Force vsts-agent.zip
 
+RUN Copy-Item "C:\Program Files\dotnet\sdk\2.0.2\Sdks" -Destination "C:\Program Files (x86)\Microsoft Visual Studio\2017\BuildTools\MSBuild" -Recurse -Container -Force
+
 SHELL ["cmd", "/S", "/C"]
 
 # Trigger the population of the local package cache
