@@ -31,12 +31,9 @@ if($env:VSTS_POOL -eq $null)
     $env:VSTS_POOL = "Default"
 }
 
-if ((Test-Path ".\bin\Agent.Listener.exe"))
+if($env:VSTS_AGENTNAME -eq $null)
 {
-    Write-Host "Remove existing agent"
-    & .\bin\Agent.Listener.exe remove --unattended `
-        --auth PAT `
-        --token "$env:VSTS_TOKEN" 
+    $env:VSTS_AGENTNAME = $env:COMPUTERNAME
 }
 
 $env:VSO_AGENT_IGNORE="VSTS_AGENT_URL,VSO_AGENT_IGNORE,VSTS_AGENT,VSTS_ACCOUNT,VSTS_TOKEN,VSTS_POOL,VSTS_WORK"
@@ -51,6 +48,7 @@ Set-Location -Path "C:\BuildAgent"
     --agent "$env:VSTS_AGENT" `
     --url "https://$env:VSTS_ACCOUNT.visualstudio.com" `
     --auth PAT `
+    --name "$env:VSTS_AGENTNAME" `
     --token "$env:VSTS_TOKEN" `
     --pool "$env:VSTS_POOL" `
     --work "$env:VSTS_WORK" `
