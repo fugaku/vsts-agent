@@ -11,33 +11,14 @@ RUN choco install \
     nodejs \
     curl \
     docker \
-    --confirm \
-    --limit-output \
-    --timeout 216000 \
-    && rmdir /S /Q C:\chococache
-
-RUN choco install \
+    netfx-4.5.2-devpack \
     netfx-4.6.1-devpack \
-    --confirm \
-    --limit-output \
-    && rmdir /S /Q C:\chococache
-
-RUN choco install \
     netfx-4.6.2-devpack \
-    --confirm \
-    --limit-output \
-    && rmdir /S /Q C:\chococache
-
-RUN choco install \
     dotnetcore-sdk \
-    --confirm \
-    --limit-output \
-    && rmdir /S /Q C:\chococache
-
-RUN choco install \
     typescript \
     --confirm \
     --limit-output \
+    --timeout 216000 \
     && rmdir /S /Q C:\chococache
 
 # common node tools
