@@ -22,7 +22,7 @@ RUN choco install \
     && rmdir /S /Q C:\chococache
 
 # common node tools
-RUN npm install gulp -g && npm install grunt -g && npm install -g less && npm install phantomjs-prebuilt -g
+RUN npm install -g less && npm install phantomjs-prebuilt -g
 
 ENV TEST_CONTAINER=1 \
     VS_CHANNEL_URI=https://aka.ms/vs/15/release/channel \

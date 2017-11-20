@@ -1,5 +1,5 @@
-FROM microsoft/windowsservercore:10.0.14393.1358
-ENV WINDOWS_IMAGE_VERSION=10.0.14393
+FROM microsoft/windowsservercore:1709
+ENV WINDOWS_IMAGE_VERSION=1709
 
 ENV chocolateyUseWindowsCompression=false
 RUN @powershell -NoProfile -ExecutionPolicy Bypass -Command "iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))" && SET "PATH=%PATH%;%ALLUSERSPROFILE%\chocolatey\bin"
@@ -8,9 +8,6 @@ RUN choco config set cachelocation C:\chococache
 
 RUN choco install \
     git  \
-    nodejs \
-    curl \
-    docker \
     netfx-4.5.2-devpack \
     netfx-4.6.1-devpack \
     netfx-4.6.2-devpack \
@@ -21,14 +18,8 @@ RUN choco install \
     --timeout 216000 \
     && rmdir /S /Q C:\chococache
 
-# common node tools
-RUN npm install gulp -g && npm install grunt -g && npm install -g less && npm install phantomjs-prebuilt -g
-
-ENV TEST_CONTAINER=1 \
-    VS_CHANNEL_URI=https://aka.ms/vs/15/release/channel \
-    VS_BUILDTOOLS_URI=https://aka.ms/vs/15/release/vs_buildtools.exe \
-    NUGET_URI=https://dist.nuget.org/win-x86-commandline/latest/nuget.exe \
-    NUGET_SHA256=4C1DE9B026E0C4AB087302FF75240885742C0FAA62BD2554F913BBE1F6CB63A0
+ENV VS_BUILDTOOLS_URI=https://aka.ms/vs/15/release/vs_buildtools.exe \
+    NUGET_URI=https://dist.nuget.org/win-x86-commandline/latest/nuget.exe
 
 SHELL ["powershell", "-ExecutionPolicy", "Bypass", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
 
@@ -73,7 +64,6 @@ ENV NUGET_XMLDOC_MODE skip
 RUN mkdir C:\warmup \
     && cd C:\warmup \
     && dotnet new mvc \
-    && dotnet restore \
     && cd .. \
     && rmdir /S /Q C:\warmup 
 
