@@ -1,8 +1,6 @@
 FROM microsoft/windowsservercore:1709
-ENV WINDOWS_IMAGE_VERSION=1709
 
 ENV chocolateyUseWindowsCompression=false
-RUN dism.exe /online /enable-feature /featurename:MicrosoftWindowsPowerShell /all
 RUN @powershell -NoProfile -ExecutionPolicy Bypass -Command "iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))" && SET "PATH=%PATH%;%ALLUSERSPROFILE%\chocolatey\bin"
 
 RUN choco config set cachelocation C:\chococache
@@ -14,23 +12,13 @@ RUN choco install \
     netfx-4.6.2-devpack \
     dotnetcore-sdk \
     typescript \
+    nuget.commandline \
     --confirm \
     --limit-output \
     --timeout 216000 \
     && rmdir /S /Q C:\chococache
 
-ENV VS_BUILDTOOLS_URI=https://aka.ms/vs/15/release/vs_buildtools.exe \
-    NUGET_URI=https://dist.nuget.org/win-x86-commandline/latest/nuget.exe
-
 SHELL ["powershell", "-ExecutionPolicy", "Bypass", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
-
-# Download nuget.exe
-RUN $ErrorActionPreference = 'Stop'; \
-    $ProgressPreference = 'SilentlyContinue'; \
-    $VerbosePreference = 'Continue'; \
-    New-Item -Path C:\bin -Type Directory | Out-Null; \
-    [System.Environment]::SetEnvironmentVariable('PATH', "\"${env:PATH};C:\bin\"", 'Machine'); \
-    Invoke-WebRequest -Uri $env:NUGET_URI -OutFile C:\bin\nuget.exe;
 
 # Download log collection utility
 RUN $ErrorActionPreference = 'Stop'; \
@@ -42,7 +30,7 @@ RUN $ErrorActionPreference = 'Stop'; \
 RUN $ErrorActionPreference = 'Stop'; \
     $ProgressPreference = 'SilentlyContinue'; \
     $VerbosePreference = 'Continue'; \
-    Invoke-WebRequest -Uri $env:VS_BUILDTOOLS_URI -OutFile C:\vs_buildtools.exe;
+    Invoke-WebRequest -Uri "https://aka.ms/vs/15/release/vs_buildtools.exe" -OutFile C:\vs_buildtools.exe;
 
 # Install build tools
 RUN $ErrorActionPreference = 'Stop'; \
@@ -55,7 +43,7 @@ RUN Invoke-WebRequest "https://github.com/Microsoft/vsts-agent/releases/download
     Expand-Archive vsts-agent.zip -DestinationPath "C:\BuildAgent" -Force; \
     Remove-Item -Force vsts-agent.zip
 
-RUN Copy-Item '"C:\Program Files\dotnet\sdk\2.0.2\Sdks"' -Destination '"C:\Program Files (x86)\Microsoft Visual Studio\2017\BuildTools\MSBuild"' -Recurse -Container -Force
+RUN Copy-Item '"C:\Program Files\dotnet\sdk\2.0.3\Sdks"' -Destination '"C:\Program Files (x86)\Microsoft Visual Studio\2017\BuildTools\MSBuild"' -Recurse -Container -Force
 
 SHELL ["cmd", "/S", "/C"]
 
