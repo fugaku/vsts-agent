@@ -1,4 +1,4 @@
-FROM microsoft/windowsservercore:1709
+FROM microsoft/windowsservercore:1803
 
 ENV chocolateyUseWindowsCompression=false
 RUN @powershell -NoProfile -ExecutionPolicy Bypass -Command "iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))" && SET "PATH=%PATH%;%ALLUSERSPROFILE%\chocolatey\bin"
@@ -43,7 +43,7 @@ RUN Invoke-WebRequest "https://github.com/Microsoft/vsts-agent/releases/download
     Expand-Archive vsts-agent.zip -DestinationPath "C:\BuildAgent" -Force; \
     Remove-Item -Force vsts-agent.zip
 
-RUN Copy-Item '"C:\Program Files\dotnet\sdk\2.0.3\Sdks"' -Destination '"C:\Program Files (x86)\Microsoft Visual Studio\2017\BuildTools\MSBuild"' -Recurse -Container -Force
+#RUN Copy-Item '"C:\Program Files\dotnet\sdk\2.1.401\Sdks"' -Destination '"C:\Program Files (x86)\Microsoft Visual Studio\2017\BuildTools\MSBuild"' -Recurse -Container -Force
 
 SHELL ["cmd", "/S", "/C"]
 
