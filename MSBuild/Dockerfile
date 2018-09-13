@@ -38,7 +38,7 @@ RUN $ErrorActionPreference = 'Stop'; \
     $p = Start-Process -Wait -PassThru -FilePath C:\vs_buildtools.exe -ArgumentList '--quiet --nocache --wait'; \
     if ($ret = $p.ExitCode) { c:\collect.exe; throw ('Install failed with exit code 0x{0:x}' -f $ret) }
 
-RUN Invoke-WebRequest "https://github.com/Microsoft/vsts-agent/releases/download/v2.124.0/vsts-agent-win7-x64-2.124.0.zip" \
+RUN Invoke-WebRequest "https://vstsagentpackage.azureedge.net/agent/2.140.0/vsts-agent-win-x64-2.140.0.zip" \
     -OutFile vsts-agent.zip; \
     Expand-Archive vsts-agent.zip -DestinationPath "C:\BuildAgent" -Force; \
     Remove-Item -Force vsts-agent.zip
